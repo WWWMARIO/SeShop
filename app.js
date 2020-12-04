@@ -3,52 +3,45 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-var Sequelize = require("sequelize");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+var loginRouter = require("./routes/login");
+const dotenv = require("dotenv");
 
 var app = express();
+dotenv.config();
 
-var sequelize = new Sequelize("seminar", "root", "", {
-  host: "localhost",
-  dialect: "mysql",
+// var User = require("./models/userModel");
+var sequelize = require("./db/dbConfig");
 
-  pool: {
-    max: 5,
-    min: 0,
-    idle: 10000,
-  },
-});
-
-var User = sequelize.define("user", {
-  firstName: {
-    type: Sequelize.STRING,
-  },
-  lastName: {
-    type: Sequelize.STRING,
-  },
-  email: {
-    type: Sequelize.STRING,
-  },
-  address: {
-    type: Sequelize.STRING,
-  },
-  address: {
-    type: Sequelize.INTEGER,
-  },
-  password: {
-    type: Sequelize.INTEGER,
-  },
-});
-
+/* User
+  .sync
+  //{ force: true }
+  ()
+  .then(function () {
+    // Table created
+    return User.create({
+      firstName: "John",
+      lastName: "Hancock3",
+      email: "mario2",
+      address: "rijeka",
+      phoneNumber: "999",
+      password: "mario",
+    });
+  })
+  .catch((err) => {
+    console.log(err.errors[0].message);
+  }); */
+/*
 User.sync({ force: true }).then(function () {
   // Table created
   return User.create({
     firstName: "John",
     lastName: "Hancock2",
+    email: "mario",
   });
-});
+}); */
 
 sequelize
   .authenticate()
@@ -67,6 +60,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/login", loginRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
