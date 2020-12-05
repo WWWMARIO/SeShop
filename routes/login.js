@@ -1,23 +1,21 @@
-var express = require("express");
-var User = require("../models/userModel");
-const { SHA256 } = require("crypto-js");
-const jwt = require("jsonwebtoken");
+const express = require('express');
+const { SHA256 } = require('crypto-js');
+const jwt = require('jsonwebtoken');
+const User = require('../models/userModel');
 
-var router = express.Router();
+const router = express.Router();
 
-const rejectionResponse = "Invalid username or password";
+const rejectionResponse = 'Invalid username or password';
 
 /* GET login. */
-router.post("/", async function (req, res, next) {
+router.post('/', async (req, res /* , next */) => {
   const email = req.body.email;
   const password = req.body.password;
   if (!email || !password) {
     res.status(401).send(rejectionResponse);
   } else {
-    //res.send("mario");
     try {
-      var user = await User.findOne({ where: { email: email } });
-      console.log(user);
+      const user = await User.findOne({ where: { email: email } });
       if (!user) {
         res.status(200).send(rejectionResponse);
       } else {
@@ -25,15 +23,18 @@ router.post("/", async function (req, res, next) {
         const hashString = hashWordArray.toString();
 
         if (hashString === user.password) {
-          jwtPayload = {
+          const jwtPayload = {
             email: req.body.email,
             id: user.id,
           };
-          console.log(jwtPayload);
           const JWT = jwt.sign(jwtPayload, process.env.TOKEN_SECRET, {
-            expiresIn: "18000s",
+            expiresIn: '18000s',
           });
-          res.json(JWT);
+          res.json({
+            email: user.email,
+            id: user.id,
+            token: JWT,
+          });
         } else {
           res.send(rejectionResponse);
         }
