@@ -8,6 +8,8 @@ const cors = require('cors');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const itemsRouter = require('./routes/items');
+const ordersRouter = require('./routes/orders');
 const loginRouter = require('./routes/login');
 const signupRouter = require('./routes/signup');
 
@@ -20,8 +22,8 @@ const sequelize = require('./db/dbConfig');
 
 /* User
   .sync
-  //{ force: true }
-  ()
+  //
+  ({ force: true })
   .then(function () {
     // Table created
     return User.create({
@@ -63,8 +65,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/items', itemsRouter);
 app.use('/login', loginRouter);
 app.use('/signup', signupRouter);
+app.use('/orders', ordersRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

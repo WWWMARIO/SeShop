@@ -23,9 +23,9 @@ function authenticateToken(req, res, next) {
 }
 
 router.get('/', authenticateToken, userController.user_list);
-// router.post('/', authenticateToken, userController.user_create_post);
 router.get('/:id', authenticateToken, userController.user_details);
 router.delete('/:id', authenticateToken, userController.user_delete_delete);
 router.put('/', authenticateToken, userController.user_update_put);
+// router.post('/', authenticateToken, userController.user_create_post);
 
 module.exports = router;

@@ -9,8 +9,9 @@ const rejectionResponse = 'Invalid username or password';
 
 /* GET login. */
 router.post('/', async (req, res /* , next */) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  const { email, password } = req.body;
+  // const email = req.body.email;
+  // const password = req.body.password;
   if (!email || !password) {
     res.status(401).send(rejectionResponse);
   } else {
