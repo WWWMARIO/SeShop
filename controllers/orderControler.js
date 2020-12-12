@@ -120,7 +120,7 @@ exports.order_list = async (req, res /* , next */) => {
 };
 
 exports.order_details = (req, res /* , next */) => {
-  Order.findAll({ where: { id: req.params.id }, include: [User] })
+  Order.findAll({ where: { id: req.params.id }, include: [User, OrderItem] })
     .then((order) => {
       if (!order) {
         res.status(400).send({ error: 'Order not found' });

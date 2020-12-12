@@ -29,10 +29,6 @@ const User = sequelize.define('user', {
   },
 });
 
-/* User.associate = (models) => {
-  User.hasMany(models.order, { foreignKey: 'userId' });
-}; */
-
 User.hasMany(Order, { foreignKey: 'userId' });
 Order.belongsTo(User, { foreignKey: 'userId' });
 
