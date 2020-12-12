@@ -122,7 +122,8 @@ exports.order_list = async (req, res /* , next */) => {
 exports.order_details = (req, res /* , next */) => {
   Order.findAll({
     where: { id: req.params.id },
-    include: [User, OrderItem, Item],
+    include: [User, OrderItem /* , Item */],
+    // include:{ all: true, nested: true }
   })
     .then((order) => {
       if (!order) {
@@ -131,7 +132,6 @@ exports.order_details = (req, res /* , next */) => {
       res.status(200).send(order);
     })
     .catch((error) => {
-      console.log(error);
       res.status(400).send(error);
     });
 
