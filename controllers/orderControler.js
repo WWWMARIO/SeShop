@@ -120,7 +120,10 @@ exports.order_list = async (req, res /* , next */) => {
 };
 
 exports.order_details = (req, res /* , next */) => {
-  Order.findAll({ where: { id: req.params.id }, include: [User, OrderItem] })
+  Order.findAll({
+    where: { id: req.params.id },
+    include: [User, OrderItem, Item],
+  })
     .then((order) => {
       if (!order) {
         res.status(400).send({ error: 'Order not found' });
@@ -128,6 +131,7 @@ exports.order_details = (req, res /* , next */) => {
       res.status(200).send(order);
     })
     .catch((error) => {
+      console.log(error);
       res.status(400).send(error);
     });
 
