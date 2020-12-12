@@ -78,12 +78,12 @@ exports.item_delete_delete = async (req, res /* , next */) => {
   })
     .then((deleted) => {
       if (!deleted) {
-        res.status(200).send('Not found');
+        res.status(200).send({ response: 'Not found' });
       }
-      res.status(200).send('Deleted');
+      res.status(200).send({ response: 'Deleted' });
     })
     .catch((error) => {
-      res.status(400).send(error.errors);
+      res.status(400).send(error);
     });
 };
 
