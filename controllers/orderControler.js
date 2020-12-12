@@ -118,3 +118,33 @@ exports.order_list = async (req, res /* , next */) => {
     }
   );
 };
+
+exports.order_details = (req, res /* , next */) => {
+  Order.findAll({ where: { id: req.params.id }, include: [User] })
+    .then((order) => {
+      if (!order) {
+        res.status(400).send({ error: 'Order not found' });
+      }
+      res.status(200).send(order);
+    })
+    .catch((error) => {
+      res.status(400).send(error);
+    });
+
+  /* Order.findByPk(req.params.id)
+    .then((user) => {
+      if (!user) {
+        res.status(200).send('Not found');
+      }
+      res.status(200).send(user);
+    })
+    .catch((error) => {
+      res.status(400).send(error.errors);
+    }); */
+
+  /* Item.destroy({
+      where: {
+        id: req.params.id,
+      },
+    }) */
+};

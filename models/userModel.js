@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/dbConfig');
+const Order = require('./orderModel');
 
 const User = sequelize.define('user', {
   id: {
@@ -27,5 +28,12 @@ const User = sequelize.define('user', {
     type: Sequelize.STRING,
   },
 });
+
+/* User.associate = (models) => {
+  User.hasMany(models.order, { foreignKey: 'userId' });
+}; */
+
+User.hasMany(Order, { foreignKey: 'userId' });
+Order.belongsTo(User, { foreignKey: 'userId' });
 
 module.exports = User;
