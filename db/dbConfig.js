@@ -1,20 +1,12 @@
 const Sequelize = require('sequelize');
 
-const dbConfig = {
-  dbName: 'mmicetic',
-  user: 'mmicetic',
-  password: 'mario',
-  host: 'ucka.veleri.hr',
-  dialect: 'mysql',
-};
-
 const sequelize = new Sequelize(
-  dbConfig.dbName,
-  dbConfig.user,
-  dbConfig.password,
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
   {
-    host: dbConfig.host,
-    dialect: dbConfig.dialect,
+    host: process.env.DB_HOST,
+    dialect: 'mysql',
 
     pool: {
       max: 5,
