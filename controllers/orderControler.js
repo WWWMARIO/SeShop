@@ -41,72 +41,37 @@ exports.order_create_post = [
       res.send(errors.array());
     } else {
       try {
-        let user;
-        try {
-          user = await User.findByPk(req.body.userId);
-          if (!user) {
-            res.status(400).send('User Not found');
-          }
-        } catch (err) {
-          res.status(400).send(err);
+        const user = await User.findByPk(req.body.userId);
+        if (!user) {
+          res.status(400).send('User Not found');
         }
-        let orderTotal;
-        try {
-          orderTotal = await calculateTotal(req.body.orderItems, res);
-          if (orderTotal === 0) {
-            res.status(400).send({ error: 'Calculation error' });
-          }
-        } catch (err) {
-          res.status(400).send(err);
+
+        const orderTotal = await calculateTotal(req.body.orderItems, res);
+        if (orderTotal === 0) {
+          res.status(400).send({ error: 'Calculation error' });
         }
-        // Data from form is valid.
-        // Create an Item object with escaped and trimmed data.
 
         const newOrder = {
           userId: user.id,
           total: orderTotal,
         };
 
-        let createdOrder;
-        try {
-          createdOrder = await Order.create(newOrder);
-        } catch (err) {
-          res.status(400).send(err);
-        }
+        const createdOrder = await Order.create(newOrder);
 
-        try {
-          req.body.orderItems.forEach(async (orderItem) => {
-            const newOrderItem = {
-              orderId: createdOrder.id,
-              itemId: orderItem.itemId,
-              amount: orderItem.amount,
-            };
-            try {
-              await OrderItem.create(newOrderItem);
-            } catch (err) {
-              console.log(err);
-              res.status(400).send(err);
-            }
-          });
-        } catch (err) {
-          console.log(err);
-          res.status(400).send(err);
-        } finally {
-          res.status(201).send(req.body.orderItems);
-        }
+        req.body.orderItems.forEach(async (orderItem) => {
+          const newOrderItem = {
+            orderId: createdOrder.id,
+            itemId: orderItem.itemId,
+            amount: orderItem.amount,
+          };
+          await OrderItem.create(newOrderItem);
+        });
       } catch (err) {
         console.log(err);
         res.status(400).send(err);
+      } finally {
+        res.status(201).send(req.body.orderItems);
       }
-
-      /* Order.create(newOrder)
-        .then((respItem) => {
-          res.status(201).send(respItem);
-          createdOrder = respItem;
-        })
-        .catch((error) => {
-          res.status(400).send(error);
-        }); */
     }
   },
 ];
