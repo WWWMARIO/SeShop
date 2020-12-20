@@ -17,7 +17,8 @@ async function calculateTotal(order, res) {
     } catch (err) {
       res.status(400).send(err);
     }
-    return total + item.price * orderItem.amount;
+    // total is promise, needs to be awaited
+    return (await total) + item.price * orderItem.amount;
   }, 0);
 }
 
@@ -83,15 +84,18 @@ exports.order_create_post = [
             try {
               await OrderItem.create(newOrderItem);
             } catch (err) {
+              console.log(err);
               res.status(400).send(err);
             }
           });
         } catch (err) {
+          console.log(err);
           res.status(400).send(err);
         } finally {
           res.status(201).send(req.body.orderItems);
         }
       } catch (err) {
+        console.log(err);
         res.status(400).send(err);
       }
 
@@ -109,7 +113,11 @@ exports.order_create_post = [
 
 exports.order_list = async (req, res /* , next */) => {
   // res.send('pozdrav');
-  Order.findAll().then(
+  Order.findAll({
+    include: [User, OrderItem /* , Item */],
+    // include:{ all: true, nested: true }
+    order: [['createdAt', 'DESC']],
+  }).then(
     (orders) => {
       res.send(orders);
     },

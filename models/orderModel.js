@@ -28,7 +28,7 @@ Order.belongsToMany(Item, {
 
 Item.belongsToMany(Order, {
   through: 'orderItem',
-  foreignKey: 'ItemId',
+  foreignKey: 'itemId',
 });
 
 module.exports = Order;
