@@ -2,6 +2,7 @@ const { body, validationResult } = require('express-validator');
 const { sanitizeBody } = require('express-validator');
 const { SHA256 } = require('crypto-js');
 const User = require('../models/userModel');
+const Order = require('../models/orderModel');
 
 exports.user_list = (req, res /* , next */) => {
   User.findAll().then(
@@ -16,12 +17,12 @@ exports.user_list = (req, res /* , next */) => {
 
 exports.user_create_post = [
   // Validate fields.
-  body('firstName').isLength({ min: 1 }).trim().isAlphanumeric(),
-  body('lastName').isLength({ min: 1 }).trim().isAlphanumeric(),
+  body('firstName').isLength({ min: 1 }).trim().isString(),
+  body('lastName').isLength({ min: 1 }).trim().isString(),
   body('email').isLength({ min: 1 }).trim().isEmail(),
-  body('address').isLength({ min: 1 }).trim().isAlphanumeric(),
+  body('address').isLength({ min: 1 }).trim().isString(),
   body('phoneNumber').isLength({ min: 6 }).trim().isAlphanumeric(),
-  body('password').isLength({ min: 6 }).trim().isAlphanumeric(),
+  body('password').isLength({ min: 6 }).trim().isString(),
 
   // Sanitize fields.
   sanitizeBody('firstName').escape(),
@@ -57,7 +58,11 @@ exports.user_create_post = [
       };
 
       User.create(newUser)
-        .then((respUser) => res.status(201).send(respUser))
+        .then((respUser) => {
+          console.log(newUser);
+          console.log(respUser);
+          res.status(201).send(respUser);
+        })
         .catch((error) => {
           res.status(400).send(error);
         });
@@ -66,7 +71,12 @@ exports.user_create_post = [
 ];
 
 exports.user_details = (req, res /* , next */) => {
-  User.findByPk(req.params.id)
+  // User.findAll({
+  //   where: { id: req.params.id },
+  //   include: [Order],
+  // //   include:{ all: true, nested: true }
+  // })
+  User.findByPk(req.params.id, { include: [Order] })
     .then((user) => {
       if (!user) {
         res.status(200).send('Not found');
@@ -74,7 +84,8 @@ exports.user_details = (req, res /* , next */) => {
       res.status(200).send(user);
     })
     .catch((error) => {
-      res.status(400).send(error.errors);
+      console.log(error);
+      res.status(400).send(error);
     });
 };
 
@@ -98,15 +109,15 @@ exports.user_delete_delete = async (req, res /* , next */) => {
 };
 
 exports.user_update_put = [
-  body('firstName').isLength({ min: 1 }).trim().isAlphanumeric(),
-  body('lastName').isLength({ min: 1 }).trim().isAlphanumeric(),
+  body('firstName').isLength({ min: 1 }).trim(),
+  body('lastName').isLength({ min: 1 }).trim(),
   body('email').isLength({ min: 1 }).trim().isEmail(),
-  body('address').isLength({ min: 1 }).trim().isAlphanumeric(),
-  body('phoneNumber').isLength({ min: 6 }).trim().isAlphanumeric(),
+  body('address').isLength({ min: 1 }).trim(),
+  body('phoneNumber').isLength({ min: 1 }).trim(),
   // body("password").isLength({ min: 6 }).trim().isAlphanumeric(),
 
   // Sanitize fields.
-  sanitizeBody('first_name').escape(),
+  sanitizeBody('firstName').escape(),
   sanitizeBody('lastName').escape(),
   sanitizeBody('email').normalizeEmail().escape(),
   sanitizeBody('address').escape(),
@@ -126,6 +137,7 @@ exports.user_update_put = [
         if (!userToUpdate) {
           res.status(200).send('Not found');
         } else {
+          console.log(req.body)
           const resp = await userToUpdate.update(req.body);
           res.status(200).send(resp);
         }
