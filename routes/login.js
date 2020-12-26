@@ -27,6 +27,7 @@ router.post('/', async (req, res /* , next */) => {
           const jwtPayload = {
             email: req.body.email,
             id: user.id,
+            role: user.role
           };
           const JWT = jwt.sign(jwtPayload, process.env.TOKEN_SECRET, {
             expiresIn: '18000s',
@@ -34,6 +35,7 @@ router.post('/', async (req, res /* , next */) => {
           res.json({
             email: user.email,
             id: user.id,
+            role: user.role,
             token: JWT,
           });
         } else {

@@ -21,6 +21,10 @@ const Item = sequelize.define('item', {
   picture: {
     type: Sequelize.STRING,
   },
+  categoryId: {
+    type: Sequelize.INTEGER,
+  },
+
 });
 
 Item.hasMany(OrderItem, { foreignKey: 'itemId' });

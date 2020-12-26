@@ -57,13 +57,17 @@ exports.user_create_post = [
         password: hashString,
       };
 
+      const exixtingUser = await User.findOne({ where: { email: req.body.email } });
+      if (exixtingUser) {
+        res.status(400).send('User with e-mail already exists');
+      }
+
       User.create(newUser)
         .then((respUser) => {
-          console.log(newUser);
-          console.log(respUser);
           res.status(201).send(respUser);
         })
         .catch((error) => {
+          console.log(error)
           res.status(400).send(error);
         });
     }
@@ -137,7 +141,6 @@ exports.user_update_put = [
         if (!userToUpdate) {
           res.status(200).send('Not found');
         } else {
-          console.log(req.body)
           const resp = await userToUpdate.update(req.body);
           res.status(200).send(resp);
         }

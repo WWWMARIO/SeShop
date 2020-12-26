@@ -27,6 +27,10 @@ const User = sequelize.define('user', {
   password: {
     type: Sequelize.STRING,
   },
+  role: {
+    type: Sequelize.STRING,
+    defaultValue: 'guest',
+  },
 });
 
 User.hasMany(Order, { foreignKey: 'userId' });
