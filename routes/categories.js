@@ -1,10 +1,10 @@
 const express = require('express');
 const categoryController = require('../controllers/categoryController');
-const auth = require('../auth/authorization');
+const auth = require('../auth/authentication');
 
 const router = express.Router();
 
-router.get('/', auth.authenticateAdmin, categoryController.category_list);
+router.get('/', auth.authenticateRegisteredUser, categoryController.category_list);
 // router.get('/:id', itemController.item_details);
 router.delete(
   '/:id',

@@ -1,10 +1,10 @@
 const express = require('express');
 const itemController = require('../controllers/itemController');
-const auth = require('../auth/authorization');
+const auth = require('../auth/authentication');
 
 const router = express.Router();
 
-router.get('/', auth.authenticateAdmin, itemController.item_list);
+router.get('/', auth.authenticateRegisteredUser, itemController.item_list);
 router.get('/:id', auth.authenticateAdmin, itemController.item_details);
 router.delete(
   '/:id',
